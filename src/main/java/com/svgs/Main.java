@@ -5,23 +5,45 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        String url = "jdbc:sqlite:./src/main/resources/chinook.db";
-        try{
-            Connection conn = DriverManager.getConnection(url);
-            Statement state = conn.createStatement();
-            String query = "SELECT * FROM employees ORDER BY FirstName ASC";
-            ResultSet results = state.executeQuery(query);
-            while(results.next()){
-                String first = results.getString("FirstName");
-                System.out.println(first);
-            }
 
-            conn.close();
-        }catch(SQLException e){
-            System.out.println(e);
+    private static Connection connection;
+    private static Statement statement;
+
+    public static void main(String[] args) {
+        createDatabase();
+        menu();
+    }
+
+    public static void createDatabase() {
+        String url = "jdbc:sqlite:./src/main/resources/users.db";
+        try {
+            connection = DriverManager.getConnection(url);
+            statement = connection.createStatement();
+            String query = "CREATE TABLE IF NOT EXISTS users(userId TEXT, password TEXT, role TEXT)";
+            statement.executeUpdate(query);
+        } catch (SQLException error) {
+            System.out.println("An error occured.");
+            System.out.println(error);
         }
+    }
+    public static void menu(){
+        System.out.println("1. Create a user");
+        Scanner input = new Scanner(System.in);
+        String choice = input.nextLine();
+        if(choice.equals("1")){
+            System.out.print("Username: ");
+            String username = input.nextLine();
+            System.out.print("Password: ");
+            String password = input.nextLine();
+            System.out.print("Role: ");
+            String role = input.nextLine();
+            createUser(username, password, role);
+        }
+    }
+    public static void createUser(String tempUsername, String tempPassword, String tempRole){
+
     }
 }
